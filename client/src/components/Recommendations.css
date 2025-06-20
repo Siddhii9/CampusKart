@@ -1,0 +1,20 @@
+.recommendations-section {
+  padding: 2rem 1rem;
+  background-color: #fdf6f0; /* light coffee cream */
+}
+
+.recommendations-heading {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #4b2e2e; /* dark coffee brown */
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}

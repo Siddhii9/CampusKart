@@ -12,9 +12,12 @@ html {
 
 body {
   font-family: "Poppins", sans-serif;
-  height: 100vh;
-  background: #1a1611;
-  overflow: hidden;
+   margin: 0;
+  padding: 0;
+  height: auto;
+  min-height: 100%;
+  background-color: #fdf6f0; 
+  overflow-x: hidden;
 }
 
 .login-main {
