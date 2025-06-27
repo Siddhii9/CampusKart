@@ -49,11 +49,15 @@ import Wishlist from "./pages/Wishlist";
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
 import Marketplace from "./pages/MarketPlace";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/" element={<Home />} />
         <Route path="/sell" element={<Sell />} />
         <Route path="/wishlist" element={<Wishlist />} />
