@@ -6,14 +6,15 @@ const auth = async (request, response, next) => {
       request.cookies.accessToken ||
       request?.headers?.authorization?.split(" ")[1];
 
+    console.log("received token: ", token);
     if (!token) {
       return response.status(401).json({
         message: "Provide token",
       });
     }
 
-    const decode = await jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
-
+    const decode = jwt.verify(token, process.env.SECRET_KEY_ACCESS_TOKEN);
+    console.log("decoded user id:", decode.id);
     if (!decode) {
       return response.status(401).json({
         message: "unauthorized access",
@@ -26,6 +27,7 @@ const auth = async (request, response, next) => {
 
     next();
   } catch (error) {
+    console.log("auth error:", error);
     return response.status(500).json({
       message: "You have not login", ///error.message || error,
       error: true,

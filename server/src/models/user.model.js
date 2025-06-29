@@ -58,6 +58,12 @@ const userSchema = new mongoose.Schema(
         ref: "order",
       },
     ],
+    wishlist: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
     forgot_password_otp: {
       type: String,
       default: null,

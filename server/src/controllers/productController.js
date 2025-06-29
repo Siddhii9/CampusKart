@@ -1,9 +1,10 @@
 import Product from "../models/Product.js";
-
+import auth from "../middleware/auth.js";
 // Add a new product
 export const addProduct = async (req, res) => {
   try {
     console.log("Received product data:", req.body);
+    const userId = req.userId;
     const { name, price, category, description, image } = req.body;
 
     if (!name || !price || !category) {
@@ -16,6 +17,7 @@ export const addProduct = async (req, res) => {
       category,
       description,
       image,
+      seller: userId,
     });
 
     const savedProduct = await newProduct.save();
@@ -60,5 +62,19 @@ export const getFilteredProducts = async (req, res) => {
   } catch (err) {
     console.error("DB fetch error:", err);
     res.status(500).json({ error: "Failed to filter products" });
+  }
+};
+
+export const getProductsByUser = async (req, res) => {
+  try {
+    console.log("userid from auth middleware:", req.userId);
+    const userId = req.userId;
+    const products = await Product.find({ seller: userId });
+    res.status(200).json({ success: true, data: products });
+  } catch (err) {
+    console.error("error in getproductsbyuser: ", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching user products" });
   }
 };

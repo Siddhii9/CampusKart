@@ -11,6 +11,9 @@ import {
   userDetails,
   verifyEmailController,
   verifyForgotPasswordOtp,
+  addToWishlist,
+  getWishlist,
+  removeFromWishlist,
 } from "../controllers/user.controller.js";
 import auth from "../middleware/auth.js";
 import upload from "../middleware/multer.js";
@@ -39,5 +42,10 @@ userRouter.post("/refresh-token", refreshToken);
 
 // Get user details (protected route)
 userRouter.get("/user-details", auth, userDetails);
+
+//whislist
+userRouter.post("/wishlist", auth, addToWishlist);
+userRouter.get("/wishlist", auth, getWishlist);
+userRouter.delete("/wishlist/:productId", auth, removeFromWishlist);
 
 export default userRouter;

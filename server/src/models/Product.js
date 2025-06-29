@@ -7,6 +7,11 @@ const productSchema = new mongoose.Schema({
   category: { type: String, required: true },
   image: String,
   createdAt: { type: Date, default: Date.now },
+  seller: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
 
 export default mongoose.model("Product", productSchema);

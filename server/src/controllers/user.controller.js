@@ -9,6 +9,7 @@ import uploadImageClodinary from "../utils/uploadImageClodinary.js";
 //import forgotPasswordTemplate from "../utils/forgotPasswordTemplate.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import Product from "../models/Product.js";
 dotenv.config();
 
 export async function registerUserController(request, response) {
@@ -151,15 +152,19 @@ export async function loginController(request, response) {
     const accesstoken = await generatedAccessToken(user._id);
     const refreshToken = await genertedRefreshToken(user._id);
 
-    const updateUser = await UserModel.findByIdAndUpdate(user?._id, {
+    await UserModel.findByIdAndUpdate(user._id, {
       last_login_date: new Date(),
     });
+
+    response.setHeader("Access-Control-Allow-Credentials", "true"); // ✅ necessary for CORS + cookies
 
     const cookiesOption = {
       httpOnly: true,
       secure: true,
       sameSite: "None",
+      maxAge: 5 * 60 * 60 * 1000, // 5 hours
     };
+
     response.cookie("accessToken", accesstoken, cookiesOption);
     response.cookie("refreshToken", refreshToken, cookiesOption);
 
@@ -179,7 +184,6 @@ export async function loginController(request, response) {
       success: false,
     });
   }
-  console.log("Exported loginController:", typeof loginController); // should be 'function'
 }
 
 //logout controller
@@ -189,8 +193,8 @@ export async function logoutController(request, response) {
 
     const cookiesOption = {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: process.env.NODE_ENV === "production" ? true : false,
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", //llow cookies on localhost
     };
 
     response.clearCookie("accessToken", cookiesOption);
@@ -523,3 +527,78 @@ export async function userDetails(request, response) {
     });
   }
 }
+
+export const addToWishlist = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { productId } = req.body;
+
+    if (!productId) {
+      return res.status(400).json({ messsage: "product id required" });
+    }
+
+    const user = await UserModel.findById(userId);
+    if (user.wishlist.includes(productId)) {
+      return res.status(400).json({ message: "already in whislist" });
+    }
+
+    user.wishlist.push(productId);
+    await user.save();
+
+    return res.status(200).json({
+      message: "product added to wishlist",
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    res.status(500).json({
+      messgae: error.message || "server error",
+      success: false,
+      error: true,
+    });
+  }
+};
+
+// Get wishlist
+export const getWishlist = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const user = await UserModel.findById(userId).populate("wishlist");
+    return res.status(200).json({
+      data: user.wishlist,
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message || "Failed to fetch wishlist",
+      success: false,
+      error: true,
+    });
+  }
+};
+
+// Remove from wishlist
+export const removeFromWishlist = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { productId } = req.params;
+
+    await UserModel.findByIdAndUpdate(userId, {
+      $pull: { wishlist: productId },
+    });
+
+    return res.status(200).json({
+      message: "Product removed from wishlist",
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message || "Error removing product",
+      success: false,
+      error: true,
+    });
+  }
+};

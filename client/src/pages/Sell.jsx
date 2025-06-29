@@ -43,7 +43,8 @@ const Sell = () => {
       };
       const res = await axios.post(
         "http://localhost:5000/api/products/add",
-        productData
+        productData,
+        { withCredentials: true }
       );
 
       if (res.status === 201) {
