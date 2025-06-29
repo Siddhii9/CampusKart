@@ -27,7 +27,7 @@ const Login = () => {
       if (res.data.success) {
         setMessage("Login successful!");
         // Redirect to home or dashboard
-        setTimeout(() => navigate("/"), 2000);
+        setTimeout(() => navigate("/home"), 2000);
       } else {
         setMessage(res.data.message || "Login failed.");
       }
