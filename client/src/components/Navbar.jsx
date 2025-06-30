@@ -2,13 +2,25 @@ import React, { useState } from "react";
 import { Heart, ShoppingCart, User } from "lucide-react";
 import "./Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     if (e.key === "Enter" && searchQuery.trim()) {
+      const term = searchQuery.trim();
+      try {
+        await axios.post(
+          "http://localhost:5000/api/users/save-search",
+          { searchTerm: term },
+          { withCredentials: true }
+        );
+      } catch (error) {
+        console.error("error saving search: ", error);
+      }
+
       navigate(`/marketplace?search=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery("");
     }

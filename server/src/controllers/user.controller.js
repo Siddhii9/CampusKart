@@ -602,3 +602,70 @@ export const removeFromWishlist = async (req, res) => {
     });
   }
 };
+
+export const saveSearchTerm = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { searchTerm } = req.body;
+
+    if (!searchTerm || typeof searchTerm !== "string") {
+      return res.status(400).json({
+        message: "search term is required and must be string",
+        error: true,
+        success: false,
+      });
+    }
+
+    const user = await UserModel.findById(userId);
+    const uniqueSearches = [
+      searchTerm,
+      ...user.recentSearches.filter((term) => term !== searchTerm),
+    ].slice(0, 10);
+
+    user.recentSearches = uniqueSearches;
+    await user.save();
+
+    return res.json({
+      message: "seacrh term saved",
+      success: true,
+      error: false,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message || "error saving search",
+      success: false,
+      error: true,
+    });
+  }
+};
+
+export const getRecommendations = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const user = await UserModel.findById(userId);
+    const recentTerms = user.recentSearches;
+
+    if (!recentTerms || recentTerms.length === 0) {
+      return res.status(200).json({ data: [], success: true });
+    }
+
+    const recommendedProducts = await Product.find({
+      $or: recentTerms.map((term) => ({
+        name: { $regex: term, $options: "i" },
+      })),
+    }).limit(10);
+
+    return res.json({
+      data: recommendedProducts,
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || "error fetching recommendations",
+      success: false,
+      error: true,
+    });
+  }
+};

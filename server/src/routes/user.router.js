@@ -14,6 +14,8 @@ import {
   addToWishlist,
   getWishlist,
   removeFromWishlist,
+  saveSearchTerm,
+  getRecommendations,
 } from "../controllers/user.controller.js";
 import auth from "../middleware/auth.js";
 import upload from "../middleware/multer.js";
@@ -48,4 +50,6 @@ userRouter.post("/wishlist", auth, addToWishlist);
 userRouter.get("/wishlist", auth, getWishlist);
 userRouter.delete("/wishlist/:productId", auth, removeFromWishlist);
 
+userRouter.post("/save-search", auth, saveSearchTerm);
+userRouter.get("/recommendations", auth, getRecommendations);
 export default userRouter;

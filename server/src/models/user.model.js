@@ -64,6 +64,10 @@ const userSchema = new mongoose.Schema(
         ref: "Product",
       },
     ],
+    recentSearches: {
+      type: [String],
+      default: [],
+    },
     forgot_password_otp: {
       type: String,
       default: null,
