@@ -7,6 +7,7 @@ import connectDB from "../config/connectDB.js"; // <- use your modular DB connec
 import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/user.router.js";
 import cookieParser from "cookie-parser";
+import cartRoutes from "./routes/cart.route.js";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -22,6 +23,7 @@ app.use(cookieParser());
 // Routes
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/cart", cartRoutes);
 
 // DB Connection + Server Start
 connectDB()
