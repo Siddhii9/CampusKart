@@ -3,11 +3,11 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import axios from "axios";
 import "../pageStyle/Cart.css";
-
+import { useNavigate } from "react-router-dom";
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [message, setMessage] = useState("");
-
+  const navigate = useNavigate();
   const fetchCart = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/cart", {
@@ -81,38 +81,19 @@ const Cart = () => {
                   <img src={item.productId.image} alt={item.productId.name} />
                   <div className="cart-item-details">
                     <h4>{item.productId.name}</h4>
-                    <div className="quantity-control">
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(
-                            item.productId._id,
-                            item.quantity,
-                            -1
-                          )
-                        }
-                        disabled={item.quantity === 1}
-                      >
-                        -
-                      </button>
-                      <span>{item.quantity}</span>
-                      <button
-                        onClick={() =>
-                          handleQuantityChange(
-                            item.productId._id,
-                            item.quantity,
-                            1
-                          )
-                        }
-                      >
-                        +
-                      </button>
-                    </div>
                     <p>₹{item.productId.price * item.quantity}</p>
                     <button
                       className="remove-btn"
                       onClick={() => handleRemove(item.productId._id)}
                     >
                       Remove
+                    </button>
+                    <br />
+                    <button
+                      className="checkout-btn"
+                      onClick={() => navigate(`/checkout/${item._id}`)}
+                    >
+                      Proceed to Checkout
                     </button>
                   </div>
                 </div>
@@ -121,7 +102,6 @@ const Cart = () => {
 
             <div className="cart-summary">
               <h3>Total: ₹{totalPrice}</h3>
-              <button className="checkout-btn">Proceed to Checkout</button>
             </div>
           </>
         )}

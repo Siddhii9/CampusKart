@@ -10,6 +10,8 @@ const Register = () => {
     name: "",
     email: "",
     password: "",
+    mobile: "",
+    upi_id: "",
   });
   const [message, setMessage] = useState("");
 
@@ -71,6 +73,22 @@ const Register = () => {
           value={formData.password}
           onChange={handleChange}
           required
+        />
+
+        <input
+          type="text"
+          placeholder="Mobile Number"
+          name="mobile"
+          value={formData.mobile}
+          onChange={handleChange}
+        />
+
+        <input
+          type="text"
+          placeholder="UPI ID"
+          name="upi_id"
+          value={formData.upi_id}
+          onChange={handleChange}
         />
 
         <button type="submit">Register</button>

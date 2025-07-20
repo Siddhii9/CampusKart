@@ -15,11 +15,11 @@ dotenv.config();
 export async function registerUserController(request, response) {
   try {
     console.log("Body:", request.body);
-    const { name, email, password } = request.body;
+    const { name, email, password, mobile, upi_id } = request.body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !mobile || !upi_id) {
       return response.status(400).json({
-        message: "provide email, name, password",
+        message: "provide email, name, password,phone no,upi id",
         error: true,
         success: false,
       });
@@ -42,6 +42,8 @@ export async function registerUserController(request, response) {
       name,
       email,
       password: hashPassword,
+      mobile,
+      upi_id,
     };
 
     const newUser = new UserModel(payload);
@@ -538,12 +540,16 @@ export const addToWishlist = async (req, res) => {
     }
 
     const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     if (user.wishlist.includes(productId)) {
       return res.status(400).json({ message: "already in whislist" });
     }
 
     user.wishlist.push(productId);
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 
     return res.status(200).json({
       message: "product added to wishlist",
@@ -565,6 +571,10 @@ export const getWishlist = async (req, res) => {
     const userId = req.userId;
 
     const user = await UserModel.findById(userId).populate("wishlist");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     return res.status(200).json({
       data: user.wishlist,
       success: true,
@@ -585,9 +595,13 @@ export const removeFromWishlist = async (req, res) => {
     const userId = req.userId;
     const { productId } = req.params;
 
-    await UserModel.findByIdAndUpdate(userId, {
-      $pull: { wishlist: productId },
-    });
+    await UserModel.findByIdAndUpdate(
+      userId,
+      {
+        $pull: { wishlist: productId },
+      },
+      { runValidators: false }
+    );
 
     return res.status(200).json({
       message: "Product removed from wishlist",

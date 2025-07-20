@@ -1,29 +1,28 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 
-if (!process.env.RESEND_API) {
-  console.log("Provide RESEND_API in side the .env file");
-}
-
-const resend = new Resend(process.env.RESEND_API);
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 const sendEmail = async ({ sendTo, subject, html }) => {
   try {
-    const { data, error } = await resend.emails.send({
-      from: "CampusKart <noreply@CampusKart.co.in>",
-      to: sendTo,
-      subject: subject,
-      html: html,
+    const info = await transporter.sendMail({
+      from: `CampusKart <${process.env.EMAIL_USER}>`,
+      to: Array.isArray(sendTo) ? sendTo : [sendTo],
+      subject,
+      html,
     });
 
-    if (error) {
-      return console.error({ error });
-    }
-
-    return data;
+    console.log("Email sent:", info.response);
+    return info;
   } catch (error) {
-    console.log(error);
+    console.error("Error sending email:", error.message);
   }
 };
 

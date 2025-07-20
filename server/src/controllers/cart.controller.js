@@ -65,40 +65,38 @@ export const removeFromCart = async (req, res) => {
   }
 };
 
-export const updateCartQuantity = async (req, res) => {
+export const getCartItemDetails = async (req, res) => {
   try {
     const userId = req.userId;
-    const { productId } = req.params;
-    const { quantity } = req.body;
+    const { cartItemId } = req.params;
 
-    if (!quantity || quantity < 1) {
-      return res.status(400).json({
-        message: "invalid quantity",
+    const item = await CartItemModel.findOne({
+      _id: cartItemId,
+      userId,
+    }).populate({
+      path: "productId",
+      populate: {
+        path: "seller",
+        select: "name email mobile upi_id",
+      },
+    });
+
+    if (!item) {
+      return res.status(404).json({
+        message: "Cart item not found",
         success: false,
         error: true,
       });
     }
-
-    const cartItem = await CartItemModel.findOneAndUpdate(
-      { userId, productId },
-      { quantity },
-      { new: true }
-    );
-
-    if (!cartItem) {
-      return res.status(400).json({
-        message: "item not found in cart",
-        success: false,
-        error: true,
-      });
-    }
-
-    return res.json({
-      message: "Quantity updated",
+    res.json({
+      data: item,
       success: true,
-      data: cartItem,
+      error: false,
     });
   } catch (err) {
-    res.status(500).json({ message: err.message, success: false });
+    res.status(500).json({
+      message: err.message,
+      success: false,
+    });
   }
 };

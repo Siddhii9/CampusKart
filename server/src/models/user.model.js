@@ -19,9 +19,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    upi_id: {
+      type: String,
+      default: "",
+      required: [true, "provide upi id"],
+    },
     mobile: {
-      type: Number,
+      type: String,
       default: null,
+      required: [true, "provide phone number"],
     },
     refresh_token: {
       type: String,

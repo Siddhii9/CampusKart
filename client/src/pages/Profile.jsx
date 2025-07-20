@@ -48,6 +48,9 @@ const Profile = () => {
           <p>
             <strong>Mobile:</strong> {user?.mobile || "Not set"}
           </p>
+          <p>
+            <strong>UPI ID:</strong> {user?.upi_id || "Not set"}
+          </p>
         </section>
 
         <section className="user-listings">

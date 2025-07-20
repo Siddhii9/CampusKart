@@ -8,6 +8,7 @@ import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/user.router.js";
 import cookieParser from "cookie-parser";
 import cartRoutes from "./routes/cart.route.js";
+import orderRoutes from "./routes/order.route.js";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -24,6 +25,7 @@ app.use(cookieParser());
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
 
 // DB Connection + Server Start
 connectDB()

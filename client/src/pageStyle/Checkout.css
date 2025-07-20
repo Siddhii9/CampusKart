@@ -1,0 +1,25 @@
+.checkout-page {
+  padding: 2rem;
+  background: #fdf6ee;
+}
+
+.checkout-page h2 {
+  color: #7b4a2d;
+}
+
+.upi-info {
+  margin-top: 2rem;
+  background-color: #fff2e5;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #a97453;
+}
+.checkout-confirm-btn {
+  margin-top: 1rem;
+  background-color: #a97453;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
